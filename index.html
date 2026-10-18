@@ -114,4 +114,26 @@ let quizIndex=0,answered=false;const quizQs=[{id:0,opts:["Hello / Greetings","Th
 function showQuiz(){let q=quizQs[quizIndex%quizQs.length],p=phrases[q.id];answered=false;$("quizQuestion").textContent=`What does “${p.kn}” mean?`;$("quizOptions").innerHTML=q.opts.map((o,i)=>`<button class="option" data-answer="${i}">${o}</button>`).join("");$("feedback").textContent=""}
 $("quizOptions").addEventListener("click",e=>{let b=e.target.closest("[data-answer]");if(!b||answered)return;answered=true;let q=quizQs[quizIndex%quizQs.length],correct=Number(b.dataset.answer)===q.correct;document.querySelectorAll(".option").forEach((o,i)=>{if(i===q.correct)o.classList.add("correct");else if(o===b)o.classList.add("wrong")});$("feedback").textContent=correct?"Correct! ಚೆನ್ನಾಗಿದೆ!":"Not quite — the correct answer is “"+q.opts[q.correct]+"”.";});$("nextQuiz").addEventListener("click",()=>{quizIndex=(quizIndex+1)%quizQs.length;showQuiz()});showQuiz();$("totalCount").textContent=phrases.length;render();
 </script>
+  <script>
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('button, [role="button"]');
+  if (!btn) return;
+
+  const icon = btn.innerText || '';
+  if (!/[🔊🔉🔈]/u.test(icon)) return;
+
+  const area = btn.closest('li, div');
+  if (!area) return;
+
+  const text = area.innerText.replace(/[🔊🔉🔈]/gu, '').trim();
+  if (!text || !window.speechSynthesis) return;
+
+  window.speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = 'kn-IN';
+  speech.rate = 0.85;
+  window.speechSynthesis.speak(speech);
+});
+</script>
 </body></html>
